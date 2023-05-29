@@ -11,6 +11,7 @@
   "dependencies": {
     "@types/node": "^20.2.5",
     "@vueuse/core": "^10.1.2",
+    "axios": "^1.4.0",
     "opencommit": "^2.2.10",
     "sass": "^1.62.1",
     "vue": "^3.2.47",

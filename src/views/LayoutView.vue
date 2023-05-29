@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import SidebarComponent from "@/components/SidebarComponent.vue";
+import InfinityScrollView from "./InfinityScrollView.vue";
 
 </script>
 
@@ -7,14 +8,14 @@ import SidebarComponent from "@/components/SidebarComponent.vue";
   <div class="layout">
     <SidebarComponent/>
     <div class="layout__body">
-      <RouterView/>
+      <!-- <RouterView/> -->
+      <InfinityScrollView/>
     </div>
   </div>
 </template> 
 
 <style scoped lang="scss">
 .layout {
-  height: 100%;
   display: grid;
   grid-template-columns: 325px 1fr;
 
