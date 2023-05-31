@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { _backgroundColor } from '#tailwind-config/theme';
-
 
 const tabs = ref([
 	'Main',
@@ -21,7 +19,7 @@ const userInfo = [
 	}, {
 		label: 'Reviews',
 		icon: 'i-fluent-preview-link-16-regular'
-	}], 
+	}],
 	[{
 		label: 'Settings',
 		icon: 'i-heroicons-adjustments-vertical-solid',
@@ -42,7 +40,7 @@ const isDark = useDark()
 		</div>
 
 		<div class="navbar__tabs flex gap-4">
-			<UButton variant="soft" v-for="(tab, idx) in tabs" :key="idx" class="navbar__tab ">
+			<UButton variant="ghost" v-for="(tab, idx) in tabs" :key="idx" class="navbar__tab ">
 				{{ tab }}
 			</UButton>
 
@@ -50,9 +48,15 @@ const isDark = useDark()
 
 		<div class="navbar__user flex items-center justify-center gap-2">
 			<UToggle v-model:model-value="isDark" on-icon="i-heroicons-moon" off-icon="i-heroicons-sun" />
-			<UDropdown :items="userInfo">
-				<UAvatar size="md" src="https://android-obzor.com/wp-content/uploads/2022/03/28e4ac42f547e6ac0f50f7cfa916ca93.jpg"
-					alt="user-avatar" />
+			<UDropdown :items="userInfo" class="flex items-center">
+				<div class="flex items-center space-x-2">
+					<img class="w-10 h-10 rounded-full object-cover"
+						src="https://android-obzor.com/wp-content/uploads/2022/03/28e4ac42f547e6ac0f50f7cfa916ca93.jpg" alt="use-avatar">
+					<div class="font-medium dark:text-white">
+						<div>Jese Leos</div>
+						<div class="text-sm text-gray-500 dark:text-gray-400">Joined in August 2014</div>
+					</div>
+				</div>
 			</UDropdown>
 		</div>
 	</div>
