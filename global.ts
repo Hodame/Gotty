@@ -9,3 +9,15 @@ export type GameCardInfo = {
 	name: string
 	background_image: string
 }
+
+export type Review = {
+	id: string
+	gameId: string,
+	rating: number
+	likes: number 
+	content: string
+	user: {
+		avatar: string 
+		nickname: string
+	}
+}
