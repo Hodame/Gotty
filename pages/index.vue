@@ -3,6 +3,11 @@ import { PageableList, GameCardInfo } from '~/global';
 
 const { data: gamePopular, pending: popularPending } = await useFetch<PageableList<GameCardInfo>>('/api/games/popular')
 const { data: gameLatest, pending: latestPending} = await useFetch<PageableList<GameCardInfo>>('/api/games/latest')
+
+const color = useColor()
+
+
+watch(popularPending, () => console.log(popularPending.value)) 
 </script>	
 
 <template>

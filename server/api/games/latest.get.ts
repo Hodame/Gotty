@@ -1,5 +1,5 @@
 export default defineEventHandler(async function (event) {
-	const runtimeConfig = useRuntimeConfig()
+	const runtimeConfig = useRuntimeConfig()	
 
 	const response = await $fetch(runtimeConfig.baseUrl, {
 		params: {
