@@ -9,7 +9,7 @@ defineProps<{
 
 <template>
     <div
-        class="max-w-xs max-h-[366px] bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 overflow-hidden pb-5">
+        class="max-w-xs max-h-[366px] bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700 overflow-hidden pb-5 cursor-pointer">
         <div class="h-44">
             <img class="rounded-t-lg h-full w-full aspect-3-3 object-cover" :src="gameInfo.background_image" alt="" />
         </div>
