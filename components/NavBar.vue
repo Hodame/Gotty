@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import Auth from '~/pages/auth.vue';
-import AuthModal from './AuthModal.vue';
-
+const supabase = useSupabaseClient()
 
 const isDark = useDark()
+const isAuthModal = ref(false)
 const isAuth = ref(false)
+const user = useUser()
 const tabs = ref([
 	'Main',
 	'Profile',
 	'Settings'
 ])
 
-const userInfo = ref([
+const userSettings = ref([
 	[{
 		label: 'Profile',
 		avatar: {
-			src: 'https://avatars.githubusercontent.com/u/739984?v=4'
+			src: user.value.user_metadata.avatar,
+			alt: user.value.user_metadata.nickname
 		}
 	}],
 	[{
@@ -37,8 +38,32 @@ const userInfo = ref([
 	[{
 		label: 'Login out',
 		icon: 'i-heroicons-arrow-right-on-rectangle-solid',
+		click: () => supabase.auth.signOut()
 	}]
 ])
+
+supabase.auth.onAuthStateChange((event, session) => {
+	if (session !== null) {
+		isAuth.value = true
+		user.value = session.user
+	}
+	else {
+		isAuth.value = false
+		user.value = {
+			email: '',
+			user_metadata: {
+				nickname: '',
+				avatar: ''
+			},
+			id: "",
+			app_metadata: {
+
+			},
+			aud: "",
+			created_at: ""
+		}
+	}
+})
 </script>
 
 <template>
@@ -48,29 +73,33 @@ const userInfo = ref([
 		</div>
 
 		<div class="navbar__tabs flex gap-4">
-			<UButton variant="ghost" v-for="(tab, idx) in tabs" :key="idx" class="navbar__tab ">
-				{{ tab }}
+			<UButton :to="{ path: '/'}" variant="ghost" class="navbar__tab ">
+				Main
+			</UButton>
+
+			<UButton :to="{ path: '/profile'}" variant="ghost" class="navbar__tab ">
+				Profile
 			</UButton>
 		</div>
 
 		<div>
-			<UButton @click="isAuth = !isAuth" label="Open modal"/>
+			<div v-if="!isAuth">
+				<UButton @click="isAuthModal = !isAuthModal" label="Sign up" />
 
-			<AuthModal v-model:is-modal="isAuth" />
-		</div>
+				<AuthModal v-model:is-modal="isAuthModal" />
+			</div>
 
-		<div class="navbar__user flex items-center justify-center gap-2">
-			<UDropdown :items="userInfo" class="flex items-center">
-				<div class="flex items-center space-x-2">
-					<img class="w-10 h-10 rounded-full object-cover"
-						src="https://android-obzor.com/wp-content/uploads/2022/03/28e4ac42f547e6ac0f50f7cfa916ca93.jpg"
-						alt="use-avatar">
-					<div class="font-medium dark:text-white">
-						<div>Jese Leos</div>
-						<div class="text-sm text-gray-500 dark:text-gray-400">Joined in August 2014</div>
+			<div v-else class="navbar__user flex items-center justify-center gap-2">
+				<UDropdown :items="userSettings" class="flex items-center">
+					<div class="flex items-center space-x-2">
+						<UAvatar size="md" :src="user.user_metadata.avatar" :alt="user.user_metadata.nickname" />
+						<div class="font-medium dark:text-white">
+							<div>{{ user.user_metadata.nickname }}</div>
+							<div class="text-sm text-gray-500 dark:text-gray-400">Joined in August 2014</div>
+						</div>
 					</div>
-				</div>
-			</UDropdown>
+				</UDropdown>
+			</div>
 		</div>
 	</div>
 </template>

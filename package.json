@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@vee-validate/nuxt": "^4.9.6",
+    "@vee-validate/yup": "^4.9.6",
     "@vueuse/core": "^10.1.2",
     "@vueuse/nuxt": "^10.1.2",
     "nuxt-swiper": "^1.1.0",

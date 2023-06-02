@@ -1,23 +1,28 @@
 <script setup lang="ts">
+type RegsiterForm = {
+	email: string
+	password: string
+	nickname: string
+}
+
 const { $yup } = useNuxtApp()
+const supabase = useSupabaseClient()
 
 const props = defineProps<{
 	isModal: boolean
 }
 >()
-
 const emits = defineEmits<{
 	(e: 'update:isModal', v: boolean): void
 }>()
 
-const supabase = useSupabaseClient()
-
 const loading = ref(false)
+const loginModal = ref(false)
 
 const authShema = $yup.object({
-	Email: $yup.string().required(),
-	Password: $yup.string().required().min(6),
-	Nickname: $yup.string().required()
+	email: $yup.string().required('Please enter your email'),
+	password: $yup.string().required('Please enter your password').min(6, 'Password must be at least 6 characters'),
+	nickname: $yup.string().required('Please enter your nickname')
 })
 
 const value = computed({
@@ -29,30 +34,40 @@ const value = computed({
 	}
 })
 
-async function register(values: any) {
+const { errors, handleSubmit, setErrors } = useForm<RegsiterForm>({
+	initialValues: { email: '', password: '', nickname: '' },
+	validationSchema: authShema,
+})
+
+const { value: email } = useField<string>('email',)
+const { value: password } = useField<string>('password',)
+const { value: nickname } = useField<string>('nickname',)
+
+const register = handleSubmit(async function register(values: any) {
 	loading.value = true
 
 	const { data, error } = await supabase.auth.signUp({
-		email: values.Email, password: values.Password, options: {
+		email: values.email, password: values.password, options: {
 			data: {
-				nickname: values.Nickname
+				nickname: values.nickname
 			}
 		}
 	})
 
 	loading.value = false
 
-	if(data) {
+	if (data) {
 		console.log(data.user);
+		emits('update:isModal', false)
 	}
 
-	if(error) {
+	if (error) {
+		if(error.message === 'Unable to validate email address: invalid format') setErrors({ email: 'Please enter a valid email' })
+		else if(error.message === 'User already registered') setErrors({ email: 'This email is alredy used' })
+		console.log(error.message);
 		
 	}
-}
-
-
-
+})
 </script>
 
 <template>
@@ -67,33 +82,30 @@ async function register(values: any) {
 				</div>
 			</template>
 
-			<Form v-slot="{ values }" class="flex flex-col gap-3" @submit="register" :validation-schema="authShema">
-				<Field v-slot="{ field, errorMessage }" name="Email" >
-					<UFormGroup label="Email" :error="errorMessage">
-						<UInput v-bind="field" size="lg" placeholder="you@example.com" icon="i-heroicons-envelope" />
-					</UFormGroup>
-				</Field>
+			<form class="flex flex-col gap-3" @submit.prevent="register">
+				<UFormGroup label="Email" :error="errors.email">
+					<UInput v-model="email" size="lg" placeholder="you@example.com" icon="i-heroicons-envelope" />
+				</UFormGroup>
 
-				<Field v-slot="{ field, errorMessage }" name="Password">
-					<UFormGroup label="Password" help="Password must be at least 6 characters" :error="errorMessage">
-						<UInput v-bind="field" size="lg" placeholder="*******" icon="i-heroicons-lock-closed" />
-					</UFormGroup>
-				</Field>
+				<UFormGroup label="Password" help="Password must be at least 6 characters" :error="errors.password">
+					<UInput v-model="password" name="password" size="lg" placeholder="*******" icon="i-heroicons-lock-closed" />
+				</UFormGroup>
 
-				<Field v-slot="{ field, errorMessage }" name="Nickname">
-					<UFormGroup label="Nickname" :error="errorMessage">
-						<UInput v-bind="field" size="lg" placeholder="Jake" icon="i-heroicons-user" />
-					</UFormGroup>
-				</Field>
+				<UFormGroup label="Nickname" :error="errors.nickname">
+					<UInput v-model="nickname" name="nickname" size="lg" placeholder="Jake" icon="i-heroicons-user" />
+				</UFormGroup>
 
-				<UButton :loading="loading" type="submit" size="lg" label="Create an account" />
-			</Form>
+				<UButton block :loading="loading" type="submit" size="lg" label="Create an account" />
+			</form>
 
 			<template #footer>
 				<span>Already have an account?</span>
 				<span>
-					<UButton label="Login here" variant="link" />
+					<UButton @click="loginModal = !loginModal" label="Login here" variant="link" />
+
+					<LoginModal v-model:is-modal="loginModal"/>
 				</span>
 			</template>
 		</UCard>
-</UModal></template>
+	</UModal>
+</template>
