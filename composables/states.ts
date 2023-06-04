@@ -18,25 +18,3 @@ export const useUser = () => useState('user', function () {
 
 	return user
 })
-
-export const useGamesPopular = () => useState('gamePopular', function () {
-	const gamePopular: PageableList<GameCardInfo> = {
-		count: 0,
-		next: "",
-		previus: "",
-		results: []
-	}
-
-	return gamePopular
-})
-
-export const useGamesLatest = () => useState('gameLatest', function () {
-	const gameLatest: PageableList<GameCardInfo> = {
-		count: 0,
-		next: "",
-		previus: "",
-		results: []
-	}
-
-	return gameLatest
-})
