@@ -24,7 +24,7 @@ export interface UserAppMetadata {
   [key: string]: any
 }
 
-export interface UserMetadata {
+export interface UserMetadata {  
   [key: string]: any
 }
 export interface User {
