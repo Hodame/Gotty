@@ -1,15 +1,14 @@
 <script setup lang="ts">
+import { PageableList, GameCardInfo } from '~/global';
+
 const supabase = useSupabaseClient()
 
 const isDark = useDark()
 const isAuthModal = ref(false)
+const isLoginModal = ref(false)
+const isSearchModal = ref(false)
 const isAuth = ref(false)
 const user = useUser()
-const tabs = ref([
-	'Main',
-	'Profile',
-	'Settings'
-])
 
 const userSettings = ref([
 	[{
@@ -24,7 +23,7 @@ const userSettings = ref([
 		icon: 'i-heroicons-rectangle-stack'
 	}, {
 		label: 'Reviews',
-		icon: 'i-fluent-preview-link-16-regular'
+		icon: 'i-fluent-preview-link-16-regular',
 	}],
 	[{
 		label: 'Settings',
@@ -32,8 +31,8 @@ const userSettings = ref([
 	},
 	{
 		label: 'Dark mode',
-		icon: isDark ? 'i-heroicons-moon' : 'i-heroicons-sun-20-solid',
-		click: () => isDark.value = !isDark.value
+		icon: isDark.value ? 'i-heroicons-moon' : 'i-heroicons-sun-20-solid',
+		click: () => isDark.value = !isDark.value,
 	}],
 	[{
 		label: 'Login out',
@@ -41,6 +40,11 @@ const userSettings = ref([
 		click: () => supabase.auth.signOut()
 	}]
 ])
+
+function openLoginModal() {
+	isLoginModal.value = true
+	isAuthModal.value = false
+}
 
 supabase.auth.onAuthStateChange((event, session) => {
 	if (session !== null) {
@@ -57,7 +61,6 @@ supabase.auth.onAuthStateChange((event, session) => {
 			},
 			id: "",
 			app_metadata: {
-
 			},
 			aud: "",
 			created_at: ""
@@ -67,35 +70,41 @@ supabase.auth.onAuthStateChange((event, session) => {
 </script>
 
 <template>
-	<div class="navbar items-center flex justify-between py-4 border-b border-color">
+	<div class="navbar items-center flex justify-between py-3">
 		<div class="navbar__logo flex items-center">
-			<UInput variant="outline" icon="i-heroicons-magnifying-glass-20-solid" size="sm" color="gray" :trailing="false" />
+			<img src="~/assets/icons/Logo.svg" alt="Gotty Logo" class="h-6 mr-5">
 		</div>
 
-		<div class="navbar__tabs flex gap-4">
-			<UButton :to="{ path: '/'}" variant="ghost" class="navbar__tab ">
-				Main
-			</UButton>
+		<ul class="flex font-medium gap-6">
+			<div>
+				<UButton @click="isSearchModal = true" label="Search" variant="ghost" icon="i-heroicons-magnifying-glass-20-solid"
+					size="xs" />
 
-			<UButton :to="{ path: '/profile'}" variant="ghost" class="navbar__tab ">
-				Profile
-			</UButton>
-		</div>
+				<UModal v-model="isSearchModal">
+					<SearchModal @close-modal="isSearchModal = false" />
+				</UModal>
+			</div>
+			<UButton size="xs" to="/" label="Main" variant="ghost" icon="i-heroicons-home" />
+			<UButton size="xs" to="/profile" label="Profile" variant="ghost" icon="i-heroicons-user" />
+		</ul>
 
 		<div>
 			<div v-if="!isAuth">
-				<UButton @click="isAuthModal = !isAuthModal" label="Sign up" />
+				<div class="min-w-[160px] flex justify-end">
+					<UButton @click="isAuthModal = !isAuthModal" label="Sign up" class="h-9"/>
+				</div>
 
-				<AuthModal v-model:is-modal="isAuthModal" />
+				<AuthModal v-model:is-modal="isAuthModal" @is-login-modal="openLoginModal" />
+				<LoginModal v-model:is-modal="isLoginModal" />
 			</div>
 
 			<div v-else class="navbar__user flex items-center justify-center gap-2">
 				<UDropdown :items="userSettings" class="flex items-center">
 					<div class="flex items-center space-x-2">
-						<UAvatar size="md" :src="user.user_metadata.avatar" :alt="user.user_metadata.nickname" />
+						<UAvatar size="sm" :src="user.user_metadata.avatar" :alt="user.user_metadata.nickname" />
 						<div class="font-medium dark:text-white">
-							<div>{{ user.user_metadata.nickname }}</div>
-							<div class="text-sm text-gray-500 dark:text-gray-400">Joined in August 2014</div>
+							<div class="text-sm">{{ user.user_metadata.nickname }}</div>
+							<div class="text-xs text-gray-500 dark:text-gray-400">Joined in {{ useDateFormat(user.created_at, 'MMMM YYYY', { locales: 'en-US'}).value }}</div>
 						</div>
 					</div>
 				</UDropdown>
