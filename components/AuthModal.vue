@@ -14,10 +14,10 @@ const props = defineProps<{
 >()
 const emits = defineEmits<{
 	(e: 'update:isModal', v: boolean): void
+	(e: 'IsLoginModal'): void
 }>()
 
 const loading = ref(false)
-const loginModal = ref(false)
 
 const authShema = $yup.object({
 	email: $yup.string().required('Please enter your email'),
@@ -101,9 +101,7 @@ const register = handleSubmit(async function register(values: any) {
 			<template #footer>
 				<span>Already have an account?</span>
 				<span>
-					<UButton @click="loginModal = !loginModal" label="Login here" variant="link" />
-
-					<LoginModal v-model:is-modal="loginModal"/>
+					<UButton @click="$emit('IsLoginModal')" label="Login here" variant="link" />
 				</span>
 			</template>
 		</UCard>
