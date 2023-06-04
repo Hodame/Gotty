@@ -16,7 +16,7 @@ defineProps<{
 
         <div class="p-5 max-h-full overflow-hidden">
             <div>
-                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ gameInfo.name }}</h5>
+                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white line-clamp-2" :title="gameInfo.name">{{ gameInfo.name }}</h5>
             </div>
             <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
                 <span class="text-ellipsis overflow-hidden line-clamp-4">Here are the biggest enterprise technology
