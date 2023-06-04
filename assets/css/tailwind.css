@@ -4,7 +4,15 @@
 
 @layer base {
 	body {
-		@apply bg-white dark:bg-stone-900;
+		@apply bg-white dark:bg-cool-900;
+	}
+	body::before {
+		content: '';
+		height: 100%;
+		position: fixed;
+		width: 100%;
+		z-index: -1;
+		background: radial-gradient(75.61% 75.61% at 50% 24.39%,rgba(30, 44, 75, 0.2),rgba(180,83,9,0) 100%);
 	}
 
 	.border-color {
