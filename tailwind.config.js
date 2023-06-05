@@ -3,7 +3,7 @@ module.exports = {
   darkMode: 'class',
   theme: {
     color: {
-      primary: 'orange'
+      primary: '#22d3ee'
     },
   },
   plugins: [],

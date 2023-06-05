@@ -11,11 +11,11 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      baseUrl: '',
-      apiKey: '',
+      baseUrl: 'https://api.rawg.io/api/games',
+      apiKey: 'e0bd00b887d44e569f95cce1824ffd92',
     }
   },
   ui: {
-    icons: ['fluent', 'heroicons']
+    icons: ['fluent', 'heroicons', 'bi']
   }
 })

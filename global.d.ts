@@ -27,6 +27,7 @@ export type GameInfoAll = {
 	id: number;
 	slug: string;
 	name: string;
+	dominant_color: string
 	name_original: string;
 	description: string;
 	metacritic: number;
