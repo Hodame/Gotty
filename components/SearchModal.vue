@@ -49,12 +49,15 @@ watchDebounced(searchKeyword, async () => {
         <div v-if="searchResults.count !== 0" v-for="(game, idx) in           searchResults?.results          " :key="idx">
           <UButton :to="`/game/${game.id}`" @click="$emit('closeModal'); searchKeyword = ''" class="w-full"
             variant="link">
-            <UseImage :src=" game.background_image " class="object-cover w-12 aspect-3-4 rounded-lg border border-color"
+            <UseImage v-if="game.background_image" :src=" game.background_image " class="object-cover w-12 aspect-3-4 rounded-lg border border-color"
               :alt=" game.name ">
               <template #loading>
                 <USkeleton class="w-12 aspect-3-4 border border-color" />
               </template>
             </UseImage>
+            <div v-else class="w-12 aspect-3-4 border border-color rounded-lg flex justify-center items-center">
+              <UIcon name="i-heroicons-photo" class="w-6 h-6"/>
+            </div>
             <h1 class="text-lg ml-3">{{ game.name }}</h1>
           </UButton>
         </div>

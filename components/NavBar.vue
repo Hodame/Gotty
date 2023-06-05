@@ -72,7 +72,9 @@ supabase.auth.onAuthStateChange((event, session) => {
 <template>
 	<div class="navbar items-center flex justify-between py-3">
 		<div class="navbar__logo flex items-center">
-			<img src="~/assets/icons/Logo.svg" alt="Gotty Logo" class="h-6 mr-5">
+			<NuxtLink to="/">
+				<img src="~/assets/icons/Logo.svg" alt="Gotty Logo" class="h-6 mr-5">	
+			</NuxtLink>		
 		</div>
 
 		<ul class="flex font-medium gap-6">
@@ -84,8 +86,8 @@ supabase.auth.onAuthStateChange((event, session) => {
 					<SearchModal @close-modal="isSearchModal = false" />
 				</UModal>
 			</div>
-			<UButton size="xs" to="/" label="Main" variant="ghost" icon="i-heroicons-home" />
-			<UButton size="xs" to="/profile" label="Profile" variant="ghost" icon="i-heroicons-user" />
+			<UButton size="xs" to="/" label="Main" :variant="$route.path === '/' ? 'soft' : 'ghost'" icon="i-heroicons-home" />
+			<UButton size="xs" to="/profile" label="Profile" :variant="$route.path === '/profile' ? 'soft' : 'ghost'" icon="i-heroicons-user" />
 		</ul>
 
 		<div>
