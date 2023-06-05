@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { GameCardInfo, PageableList } from '~/global';
+import { GameInfoAll, PageableList } from '~/global';
 
 defineProps<{
-  slides: PageableList<GameCardInfo> | null
+  slides: PageableList<GameInfoAll> | null
 }>()
 </script>
 
@@ -10,9 +10,9 @@ defineProps<{
   <Swiper :autoplay="{
     delay: 4000,
     disableOnInteraction: true
-  }" :slides-per-view="4" :space-between="20" :effect="'coverflow'" style="overflow: visible;">
+  }" :slides-per-view="4" :space-between="20" :effect="'coverflow'">
     <SwiperSlide v-for="(game, idx) in slides?.results" :key="idx">
-      <NuxtLink :to="{ path: '/game/' + game.id }">
+      <NuxtLink :to="{ path: '/game/' + game.id }" class="block h-full">
         <CardsGameDefault :game-info="game" />
       </NuxtLink>
     </SwiperSlide>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { _backgroundColor } from '#tailwind-config/theme';
 import { GameInfoAll } from '~/global';
 
 const runtimeConfig = useRuntimeConfig()
@@ -48,9 +49,9 @@ console.log(useDateFormat(game?.value?.released, 'MMM D, YYYY', { locales: 'en-U
 
     <div class="grid grid-cols-[1fr_200px] gap-10">
       <div>
-        <div class="rounded-3xl overflow-hidden border-4 border-gray-200 dark:border-gray-700">
-          <img :src="game?.background_image" alt="screenshots" class="aspect-[16/9] object-cover">
-        </div>
+          <div class="rounded-3xl overflow-hidden border border-gray-200 dark:border-gray-700">
+            <img :src="game?.background_image" alt="screenshots" class="aspect-[16/9] object-cover">
+          </div>
 
         <div class="my-5 text-lg">
           <p v-html="game?.description"></p>
