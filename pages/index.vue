@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { PageableList, GameCardInfo } from '~/global';
+import { useTitle } from '@vueuse/core';
+import { PageableList, GameInfoAll } from '~/global';
 
 const runtimeConfig = useRuntimeConfig()
 const from = useDateFormat(new Date(new Date().setMonth(new Date().getMonth() - 1)), 'YYYY-MM-DD')
 const to = useDateFormat(useNow(), 'YYYY-MM-DD')
 
-const { data: gameLatest, pending: latestPending } = await useLazyFetch<PageableList<GameCardInfo>>(() => runtimeConfig.public.baseUrl, {
+const { data: gameLatest, pending: latestPending } = await useLazyFetch<PageableList<GameInfoAll>>(() => runtimeConfig.public.baseUrl, {
 	params: {
 		key: runtimeConfig.public.apiKey,
 		ordering: '-released',
@@ -13,7 +14,7 @@ const { data: gameLatest, pending: latestPending } = await useLazyFetch<Pageable
 	}
 })
 
-const { data: gamePopular, pending: popularPending } = await useLazyFetch<PageableList<GameCardInfo>>(() => runtimeConfig.public.baseUrl, {
+const { data: gamePopular, pending: popularPending } = await useLazyFetch<PageableList<GameInfoAll>>(() => runtimeConfig.public.baseUrl, {
 	params: {
 		key: runtimeConfig.public.apiKey,
 		ordering: '-rating',
@@ -21,6 +22,7 @@ const { data: gamePopular, pending: popularPending } = await useLazyFetch<Pageab
 	},
 }) 
 
+useTitle('Main')
 </script>	
 
 <template>
@@ -35,7 +37,7 @@ const { data: gamePopular, pending: popularPending } = await useLazyFetch<Pageab
 			<div v-else class="mb-8">
 				<USkeleton class="h-11 w-[250px] mb-5" />
 				<div class="flex gap-5">
-					<USkeleton v-for="item in 4" class="w-[285px] h-[366px]" />
+					<USkeleton v-for="item in 4" class="w-[285px] h-[320px]" />
 				</div>
 			</div>
 		</section>
@@ -50,7 +52,7 @@ const { data: gamePopular, pending: popularPending } = await useLazyFetch<Pageab
 				<USkeleton class="h-11 w-[250px] mb-5" />
 
 				<div class="flex gap-5">
-					<USkeleton v-for="item in 4" class="w-[285px] h-[366px]" />
+					<USkeleton v-for="item in 4" class="w-[285px] h-[320px]" />
 				</div>
 			</div>
 		</section>
@@ -66,7 +68,7 @@ const { data: gamePopular, pending: popularPending } = await useLazyFetch<Pageab
 				<USkeleton class="h-11 w-[250px] mb-5" />
 
 				<div class="flex gap-5">
-					<USkeleton v-for="item in 4" class="w-[285px] h-[366px]" />
+					<USkeleton v-for="item in 4" class="w-[285px] h-[320px]" />
 				</div>
 			</div> -->
 		</section>
