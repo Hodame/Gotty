@@ -83,7 +83,7 @@ supabase.auth.onAuthStateChange((event, session) => {
 					size="xs" />
 
 				<UModal v-model="isSearchModal">
-					<SearchModal @close-modal="isSearchModal = false" />
+					<ModalsSearch @close-modal="isSearchModal = false" />
 				</UModal>
 			</div>
 			<UButton size="xs" to="/" label="Main" :variant="$route.path === '/' ? 'soft' : 'ghost'" icon="i-heroicons-home" />
@@ -96,8 +96,8 @@ supabase.auth.onAuthStateChange((event, session) => {
 					<UButton @click="isAuthModal = !isAuthModal" label="Sign up" class="h-9"/>
 				</div>
 
-				<AuthModal v-model:is-modal="isAuthModal" @is-login-modal="openLoginModal" />
-				<LoginModal v-model:is-modal="isLoginModal" />
+				<ModalsAuth v-model:is-modal="isAuthModal" @is-login-modal="openLoginModal" />
+				<ModalsLogin v-model:is-modal="isLoginModal" />
 			</div>
 
 			<div v-else class="navbar__user flex items-center justify-center gap-2">
