@@ -45,11 +45,11 @@ async function addGameReview() {
 			text_review: textReview.value,
 			rating: selectedRate.value,
 			collection: selected.value,
-			posted_by: user.value.id
+			user_id: user.value.id
 		}]).select()
 
 		if(data) {
-
+			console.log(data)
 		}
 		isLoading.value = false
 	} catch (error) {

@@ -13,14 +13,14 @@ export type GameCardInfo = {
 
 export type Review = {
 	id: string
-	gameId: string,
+	created_at: string,
+	game_id: string
+	name: string
+	background_image: string
 	rating: number
-	likes: number
-	content: string
-	user: {
-		avatar: string
-		nickname: string
-	}
+	collection: 'want' | 'playing' | 'beaten' | ''
+	text_review: string
+	user_id : string
 }
 
 export type GameInfoAll = {

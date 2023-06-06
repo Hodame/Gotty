@@ -2,7 +2,7 @@
 type RegsiterForm = {
 	email: string
 	password: string
-	nickname: string
+	username: string
 }
 
 const { $yup } = useNuxtApp()
@@ -22,7 +22,7 @@ const loading = ref(false)
 const authShema = $yup.object({
 	email: $yup.string().required('Please enter your email'),
 	password: $yup.string().required('Please enter your password').min(6, 'Password must be at least 6 characters'),
-	nickname: $yup.string().required('Please enter your nickname')
+	username: $yup.string().required('Please enter your username')
 })
 
 const value = computed({
@@ -35,13 +35,13 @@ const value = computed({
 })
 
 const { errors, handleSubmit, setErrors } = useForm<RegsiterForm>({
-	initialValues: { email: '', password: '', nickname: '' },
+	initialValues: { email: '', password: '', username: '' },
 	validationSchema: authShema,
 })
 
 const { value: email } = useField<string>('email',)
 const { value: password } = useField<string>('password',)
-const { value: nickname } = useField<string>('nickname',)
+const { value: username } = useField<string>('username',)
 
 const register = handleSubmit(async function register(values: any) {
 	loading.value = true
@@ -49,7 +49,7 @@ const register = handleSubmit(async function register(values: any) {
 	const { data, error } = await supabase.auth.signUp({
 		email: values.email, password: values.password, options: {
 			data: {
-				nickname: values.nickname
+				username: values.username
 			}
 		}
 	})
@@ -57,7 +57,6 @@ const register = handleSubmit(async function register(values: any) {
 	loading.value = false
 
 	if (data) {
-		console.log(data.user);
 		emits('update:isModal', false)
 	}
 
@@ -91,8 +90,8 @@ const register = handleSubmit(async function register(values: any) {
 					<UInput v-model="password" name="password" size="lg" placeholder="*******" icon="i-heroicons-lock-closed" />
 				</UFormGroup>
 
-				<UFormGroup label="Nickname" :error="errors.nickname">
-					<UInput v-model="nickname" name="nickname" size="lg" placeholder="Jake" icon="i-heroicons-user" />
+				<UFormGroup label="username" :error="errors.username">
+					<UInput v-model="username" name="username" size="lg" placeholder="Jake" icon="i-heroicons-user" />
 				</UFormGroup>
 
 				<UButton block :loading="loading" type="submit" size="lg" label="Create an account" />

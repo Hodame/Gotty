@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { PageableList, GameCardInfo } from '~/global';
-
 const supabase = useSupabaseClient()
 
 const isDark = useDark()
@@ -47,7 +45,8 @@ function openLoginModal() {
 }
 
 supabase.auth.onAuthStateChange((event, session) => {
-	if (session !== null) {
+	
+	if (session !== null && session.user !== null) {
 		isAuth.value = true
 		user.value = session.user
 	}
@@ -56,7 +55,7 @@ supabase.auth.onAuthStateChange((event, session) => {
 		user.value = {
 			email: '',
 			user_metadata: {
-				nickname: '',
+				username: '',
 				avatar: ''
 			},
 			id: "",
@@ -103,9 +102,9 @@ supabase.auth.onAuthStateChange((event, session) => {
 			<div v-else class="navbar__user flex items-center justify-center gap-2">
 				<UDropdown :items="userSettings" class="flex items-center">
 					<div class="flex items-center space-x-2">
-						<UAvatar size="sm" :src="user.user_metadata.avatar" :alt="user.user_metadata.nickname" />
+						<UAvatar size="sm" :src="user.user_metadata.avatar" :alt="user.user_metadata.username" />
 						<div class="font-medium dark:text-white">
-							<div class="text-sm">{{ user.user_metadata.nickname }}</div>
+							<div class="text-sm">{{ user.user_metadata.username }}</div>
 							<div class="text-xs text-gray-500 dark:text-gray-400">Joined in {{ useDateFormat(user.created_at, 'MMMM YYYY', { locales: 'en-US'}).value }}</div>
 						</div>
 					</div>

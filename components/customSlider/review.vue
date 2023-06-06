@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { GameCardInfo, PageableList } from '~/global';
+import { Review } from '~/global';
 
 defineProps<{
-  slides?: PageableList<GameCardInfo> | null
+  slides: Review[] | null
 }>()
 </script>
 
@@ -11,8 +11,8 @@ defineProps<{
     delay: 8000,
     disableOnInteraction: true
   }" :slides-per-view="4" :space-between="20" class="main__popular-cards pt-9">
-    <SwiperSlide v-for="(review, idx) in 4" :key="idx" class="pt-10">
-      <CardsReviewMain />
+    <SwiperSlide v-for="(review, idx) in slides" :key="idx" class="pt-10">
+      <CardsReviewMain :review="review"/>
     </SwiperSlide>
   </Swiper>
 </template>

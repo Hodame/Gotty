@@ -63,9 +63,13 @@ useTitle(game.value?.name)
         <div class="my-5">
           <p v-html="game?.description" class="text-gray-900 dark:text-gray-400"></p>
         </div>
+
       </div>
 
       <GamePageInfo :game="game" />
     </div>
+  </div>
+  <div>
+    <GamePageReviews :id="game?.id" />
   </div>
 </template>
