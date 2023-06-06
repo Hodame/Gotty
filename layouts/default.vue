@@ -3,7 +3,7 @@
 	</div>
 	<NuxtLoadingIndicator />
 	<div
-		class="border-b border-color fixed w-full z-50 bg-white/75 backdrop-blur-none backdrop-blur-xl dark:bg-cool-900/75 ">
+		class="border-b border-color fixed w-full z-50 bg-white/80 backdrop-blur-none backdrop-blur-xl dark:bg-cool-900/75 ">
 		<NavBar class="max-w-[1200px] mx-auto px-4" />
 	</div>
 	<div class="default max-w-[1200px] mx-auto px-4">
