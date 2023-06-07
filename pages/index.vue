@@ -2,6 +2,10 @@
 import { useTitle } from '@vueuse/core';
 import { PageableList, GameInfoAll } from '~/global';
 
+definePageMeta({
+	keepalive: true
+})
+
 const runtimeConfig = useRuntimeConfig()
 const from = useDateFormat(new Date(new Date().setMonth(new Date().getMonth() - 1)), 'YYYY-MM-DD')
 const to = useDateFormat(useNow(), 'YYYY-MM-DD')
@@ -57,12 +61,12 @@ useTitle('Main')
 			</div>
 		</section>
 
-		<section class="main__reviews mb-8">
+		<!-- <section class="main__reviews mb-8">
 			<div>
 				<div class="main__title text-5xl font-semibold">Recent reviews</div>
 
 				<CustomSliderReview />
-			</div>
+			</div> -->
 
 			<!-- <div class="mb-8">
 				<USkeleton class="h-11 w-[250px] mb-5" />
@@ -71,6 +75,6 @@ useTitle('Main')
 					<USkeleton v-for="item in 4" class="w-[285px] h-[320px]" />
 				</div>
 			</div> -->
-		</section>
+		<!-- </section> -->
 	</div>
 </template>

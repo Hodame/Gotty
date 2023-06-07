@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { Review } from '~/global';
+
 const supabase = useSupabaseClient()
-const user = useUser()
+const user = useSupabaseUser()
 
 const props = defineProps<{
 	isModal: boolean
@@ -8,7 +10,8 @@ const props = defineProps<{
 		name: string | undefined
 		id: number | undefined
 		background_image: string | undefined
-	}
+	},
+	userReview?: Review
 }
 >()
 const emits = defineEmits<{
@@ -19,10 +22,10 @@ const emits = defineEmits<{
 const isRateModal = ref(false)
 const isLoading = ref(false)
 
-const selected = ref<'want' | 'playing' | 'beaten' | null>(null)
-const selectedRate = ref('')
+const selected = ref<'want' | 'playing' | 'beaten' | ''>(props.userReview?.collection ? props.userReview?.collection : '')
+const selectedRate = ref(props.userReview?.rating ? props.userReview?.rating : '')
 const rateScale = ref(['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
-const textReview = ref('')
+const textReview = ref(props.userReview?.text_review ? props.userReview?.text_review : '')
 
 const value = computed({
 	get() {
@@ -30,7 +33,6 @@ const value = computed({
 	},
 	set(value: boolean) {
 		emits('update:isModal', value)
-		selected.value = null
 	}
 })
 
@@ -45,11 +47,35 @@ async function addGameReview() {
 			text_review: textReview.value,
 			rating: selectedRate.value,
 			collection: selected.value,
-			user_id: user.value.id
+			user_id: user.value?.id
 		}]).select()
 
 		if(data) {
 			console.log(data)
+		}
+		isLoading.value = false
+	} catch (error) {
+		throw error
+	}
+}
+
+async function editGameReview() {
+	try {
+		isLoading.value = true
+		//@ts-ignore
+		const { data, error } = await supabase.from('games_review').update({
+			"text_review": textReview.value,
+			"rating": selectedRate.value,
+			"collection": selected.value,
+		}).eq('user_id', user.value?.id).eq('game_id', props.game.id).select()
+
+		if(data) {
+			console.log(data)
+		}
+
+		if(error) {
+			console.log(error);
+			
 		}
 		isLoading.value = false
 	} catch (error) {
@@ -107,7 +133,8 @@ async function addGameReview() {
 						</div>
 
 						<template #footer>
-							<UButton @click="addGameReview()" :loading="isLoading" label="Add" size="sm" color="primary" block variant="solid" />
+							<UButton v-if="userReview" @click="editGameReview()" :loading="isLoading" label="Edit" size="sm" color="primary" block variant="solid" />
+							<UButton v-else @click="addGameReview()" :loading="isLoading" label="Add" size="sm" color="primary" block variant="solid" />
 						</template>
 
 					</UCard>

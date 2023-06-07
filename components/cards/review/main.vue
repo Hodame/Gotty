@@ -7,23 +7,12 @@ const props = defineProps<{
   review: Review
 }>()
 
-const postedBy = ref<Profile[]>([{
-  id: '',
-  avatar_url: '',
-  username: ''
-}])
 
-onMounted(async function () {
-  try {
-    const { data } = await supabase.from('profiles').select('*').eq('id', props.review.user_id)
-
-    //@ts-ignore
-    if(data) postedBy.value = data
-  } catch (error) {
-    throw error
-  }
+const { data: postedBy } = useLazyAsyncData('reviews', async function () {
+  const { data } = await supabase.from('profiles').select('*').eq('id', props.review.user_id)
+  
+  return data as unknown as Profile
 })
-
 </script>
 
 <template>
@@ -49,8 +38,8 @@ onMounted(async function () {
       <UButton label="Read more" class="mr-1"/>
 
       <div class="flex items-center overflow-hidden">
-        <UAvatar :src="postedBy[0].avatar_url" :alt="postedBy[0].username" class="w-full"/>
-        <span class="text-ellipsis overflow-hidden">{{ postedBy[0].username }}</span>
+        <UAvatar :src="postedBy?.avatar_url" :alt="postedBy?.username" class="w-full"/>
+        <span class="text-ellipsis overflow-hidden">{{ postedBy?.username }}</span>
       </div>
     </div>
 

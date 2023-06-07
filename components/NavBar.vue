@@ -5,15 +5,19 @@ const isDark = useDark()
 const isAuthModal = ref(false)
 const isLoginModal = ref(false)
 const isSearchModal = ref(false)
-const isAuth = ref(false)
-const user = useUser()
+const user = useSupabaseUser()
+
+function openLoginModal() {
+	isLoginModal.value = true
+	isAuthModal.value = false
+}
 
 const userSettings = ref([
 	[{
 		label: 'Profile',
 		avatar: {
-			src: user.value.user_metadata.avatar,
-			alt: user.value.user_metadata.nickname
+			src: user.value ? user.value.user_metadata.avatar : '',
+			alt: user.value ? user.value.user_metadata.username : ''
 		}
 	}],
 	[{
@@ -38,34 +42,6 @@ const userSettings = ref([
 		click: () => supabase.auth.signOut()
 	}]
 ])
-
-function openLoginModal() {
-	isLoginModal.value = true
-	isAuthModal.value = false
-}
-
-supabase.auth.onAuthStateChange((event, session) => {
-	
-	if (session !== null && session.user !== null) {
-		isAuth.value = true
-		user.value = session.user
-	}
-	else {
-		isAuth.value = false
-		user.value = {
-			email: '',
-			user_metadata: {
-				username: '',
-				avatar: ''
-			},
-			id: "",
-			app_metadata: {
-			},
-			aud: "",
-			created_at: ""
-		}
-	}
-})
 </script>
 
 <template>
@@ -90,7 +66,7 @@ supabase.auth.onAuthStateChange((event, session) => {
 		</ul>
 
 		<div>
-			<div v-if="!isAuth">
+			<div v-if="!user">
 				<div class="min-w-[160px] flex justify-end">
 					<UButton @click="isAuthModal = !isAuthModal" label="Sign up" class="h-9"/>
 				</div>

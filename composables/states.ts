@@ -1,4 +1,3 @@
-import { GameCardInfo, PageableList } from "~/global";
 import type { User } from "~/types/user";
 
 export const useUser = () => useState('user', function () {
