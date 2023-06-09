@@ -1,43 +1,19 @@
 <script setup lang="ts">
-import { useTitle } from '@vueuse/core';
 import { GameInfoAll, Review } from '~/global';
 
 const runtimeConfig = useRuntimeConfig()
-const supabase = useSupabaseClient()
-const user = useSupabaseUser()
 const route = useRoute()
 
 const gameId = ref(Number(route.params.id))
 const isAddModal = ref(false)
 const isEditModal = ref(false)
-const userReview = ref<Review>({
-  id: '',
-  created_at: '',
-  game_id: '',
-  name: '',
-  background_image: '',
-  rating: 0,
-  collection: '',
-  text_review: '',
-  user_id: ''
-})
+const userReview = ref<Review | null>(null)
 
 const { data: game, pending } = useLazyFetch<GameInfoAll>(() => `${runtimeConfig.public.baseUrl}/${gameId.value}`, {
   params: {
     key: runtimeConfig.public.apiKey,
   }
 })
-
-const { data: gamesReview } = await useLazyAsyncData('reviews', async () => {
-  if(user.value) {
-    const { data } = await supabase.from('games_review').select('*').eq('user_id', user.value.id).eq('game_id', gameId.value)
-
-    return data as Review[]
-  }
-
-})
-
-if(gamesReview.value !== null && gamesReview.value !== undefined) userReview.value = gamesReview.value[0]
 </script>
 
 <template>
@@ -76,10 +52,10 @@ if(gamesReview.value !== null && gamesReview.value !== undefined) userReview.val
           <img :src="game?.background_image" alt="screenshots" class="aspect-[16/9] object-cover">
         </div>
 
-        <div class="my-4">
+        <div class="my-4" v-if="game">
           <div v-if="!userReview">
             <UButton @click="isAddModal = true" icon="i-heroicons-plus-20-solid" size="lg" label="Add to" block />
-            <ModalsRateGame :game="{ id: game?.id, name: game?.name, background_image: game?.background_image }"
+            <ModalsRateGame :game="{ id: game.id, name: game.name, background_image: game.background_image }"
               v-model:is-modal="isAddModal" />
           </div>
 
@@ -87,7 +63,7 @@ if(gamesReview.value !== null && gamesReview.value !== undefined) userReview.val
             <UButton @click="isEditModal = true" icon="i-heroicons-pencil" size="lg" :label="userReview.collection"
               block />
             <ModalsRateGame :user-review="userReview"
-              :game="{ id: game?.id, name: game?.name, background_image: game?.background_image }"
+              :game="{ id: game.id, name: game.name, background_image: game.background_image }"
               v-model:is-modal="isEditModal" />
           </div>
         </div>
