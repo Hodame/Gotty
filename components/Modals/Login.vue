@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
+const auth = useFirebaseAuth()!
+
 type LoginForm = {
 	email: string
 	password: string
@@ -13,7 +17,6 @@ const emits = defineEmits<{
 }>()
 
 const { $yup } = useNuxtApp()
-const supabase = useSupabaseClient()
 
 const loading = ref(false)
 
@@ -40,23 +43,24 @@ const { value: email, setErrors } = useField<string>('email',)
 const { value: password } = useField<string>('password',)
 
 const login = handleSubmit(async function (values: any) {
-	loading.value = true
-	console.log(values);
-
-	const { data, error } = await supabase.auth.signInWithPassword({
-		email: values.email,
-		password: values.password,
-	})
-	loading.value = false
-
-	if (data.user !== null) {
-		console.log(data);
-		emits('update:isModal', false)
+	try {
+		loading.value = true
+		await signInWithEmailAndPassword(auth, values.email, values.password)
+	} catch (error) {
+		throw error
+	}
+	finally {
+		loading.value = false
 	}
 
-	if (error) {
-		setErrors('Wrong password or email')
-	}
+	// if (data.user !== null) {
+	// 	console.log(data);
+	// 	emits('update:isModal', false)
+	// }
+
+	// if (error) {
+	// 	setErrors('Wrong password or email')
+	// }
 })
 </script>
 

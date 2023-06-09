@@ -1,18 +1,10 @@
 <script setup lang="ts">
 import type { Review } from "@/global";
-import { Profile } from "~/types/profiles";
 
-const supabase = useSupabaseClient()
 const props = defineProps<{
   review: Review
 }>()
 
-
-const { data: postedBy } = useLazyAsyncData('reviews', async function () {
-  const { data } = await supabase.from('profiles').select('*').eq('id', props.review.user_id)
-  
-  return data as unknown as Profile
-})
 </script>
 
 <template>
@@ -37,10 +29,10 @@ const { data: postedBy } = useLazyAsyncData('reviews', async function () {
     <div class="flex gap-3">
       <UButton label="Read more" class="mr-1"/>
 
-      <div class="flex items-center overflow-hidden">
+      <!-- <div class="flex items-center overflow-hidden">
         <UAvatar :src="postedBy?.avatar_url" :alt="postedBy?.username" class="w-full"/>
         <span class="text-ellipsis overflow-hidden">{{ postedBy?.username }}</span>
-      </div>
+      </div> -->
     </div>
 
   </div>
