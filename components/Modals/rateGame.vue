@@ -1,15 +1,16 @@
 <script setup lang="ts">
+import { addDoc, collection } from 'firebase/firestore';
 import { Review } from '~/global';
 
-const supabase = useSupabaseClient()
-const user = useSupabaseUser()
+const db = useFirestore()
+const user = useCurrentUser()
 
 const props = defineProps<{
 	isModal: boolean
 	game: {
-		name: string | undefined
-		id: number | undefined
-		background_image: string | undefined
+		name: string 
+		id: number 
+		background_image: string 
 	},
 	userReview?: Review
 }
@@ -39,49 +40,45 @@ const value = computed({
 async function addGameReview() {
 	try {
 		isLoading.value = true
-		//@ts-ignore
-		const { data } = await supabase.from('games_review').insert([{
+		if(!user.value) throw new Error()
+		await addDoc(gamesReviewsCollection(db), {
 			game_id: props.game.id,
 			name: props.game.name,
 			background_image: props.game.background_image,
 			text_review: textReview.value,
 			rating: selectedRate.value,
 			collection: selected.value,
-			user_id: user.value?.id
-		}]).select()
-
-		if(data) {
-			console.log(data)
-		}
+			user_id: user.value.uid
+		})
 		isLoading.value = false
 	} catch (error) {
 		throw error
 	}
 }
 
-async function editGameReview() {
-	try {
-		isLoading.value = true
-		//@ts-ignore
-		const { data, error } = await supabase.from('games_review').update({
-			"text_review": textReview.value,
-			"rating": selectedRate.value,
-			"collection": selected.value,
-		}).eq('user_id', user.value?.id).eq('game_id', props.game.id).select()
+// async function editGameReview() {
+// 	try {
+// 		isLoading.value = true
+// 		console.log(props.game.id?.toString(), 'usre', user.value?.id);		
+// 		//@ts-ignore
+// 		const { data, error } = await supabase.from('games_review').update({
+// 			"text_review": textReview.value,
+// 			"rating": selectedRate.value.toString(),
+// 			"collection": selected.value,
+// 		}).eq('user_id', user.value?.id).eq('game_id', props.game.id?.toString()).select()
 
-		if(data) {
-			console.log(data)
-		}
+// 		if(data) {
+// 			console.log(data)
+// 		}
 
-		if(error) {
-			console.log(error);
-			
-		}
-		isLoading.value = false
-	} catch (error) {
-		throw error
-	}
-}
+// 		if(error) {	
+// 			console.log(error);
+// 		}
+// 		isLoading.value = false
+// 	} catch (error) {
+// 		throw error
+// 	}
+// }
 
 </script>
 
@@ -133,8 +130,8 @@ async function editGameReview() {
 						</div>
 
 						<template #footer>
-							<UButton v-if="userReview" @click="editGameReview()" :loading="isLoading" label="Edit" size="sm" color="primary" block variant="solid" />
-							<UButton v-else @click="addGameReview()" :loading="isLoading" label="Add" size="sm" color="primary" block variant="solid" />
+							<!-- <UButton v-if="userReview" @click="editGameReview()" :loading="isLoading" label="Edit" size="sm" color="primary" block variant="solid" /> -->
+							<UButton @click="addGameReview()" :loading="isLoading" label="Add" size="sm" color="primary" block variant="solid" />
 						</template>
 
 					</UCard>

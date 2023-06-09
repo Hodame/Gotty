@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+
 type RegsiterForm = {
 	email: string
 	password: string
@@ -6,8 +8,7 @@ type RegsiterForm = {
 }
 
 const { $yup } = useNuxtApp()
-const supabase = useSupabaseClient()
-
+const auth = useFirebaseAuth()!
 const props = defineProps<{
 	isModal: boolean
 }
@@ -43,29 +44,28 @@ const { value: email } = useField<string>('email',)
 const { value: password } = useField<string>('password',)
 const { value: username } = useField<string>('username',)
 
+
 const register = handleSubmit(async function register(values: any) {
-	loading.value = true
-
-	const { data, error } = await supabase.auth.signUp({
-		email: values.email, password: values.password, options: {
-			data: {
-				username: values.username
-			}
-		}
-	})
-
-	loading.value = false
-
-	if (data) {
+	try {
+		loading.value = true
+		await createUserWithEmailAndPassword(auth, email.value, password.value)
+		.then( async (user) => {
+			await updateProfile(user.user, {
+				displayName: username.value
+			})
+		})
 		emits('update:isModal', false)
+	} catch (error) {
+		throw error
 	}
-
-	if (error) {
-		if(error.message === 'Unable to validate email address: invalid format') setErrors({ email: 'Please enter a valid email' })
-		else if(error.message === 'User already registered') setErrors({ email: 'This email is alredy used' })
-		console.log(error.message);
-		
+	finally { 
+		loading.value = false
 	}
+	// if (error) {
+	// 	if (error.message === 'Unable to validate email address: invalid format') setErrors({ email: 'Please enter a valid email' })
+	// 	else if (error.message === 'User already registered') setErrors({ email: 'This email is alredy used' })
+	// 	console.log(error.message);
+	// }
 })
 </script>
 
