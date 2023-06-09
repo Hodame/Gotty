@@ -1,11 +1,11 @@
 <script setup lang="ts">
-const supabase = useSupabaseClient()
+const user = useCurrentUser()
+const auth = useFirebaseAuth()!
 
 const isDark = useDark()
 const isAuthModal = ref(false)
 const isLoginModal = ref(false)
 const isSearchModal = ref(false)
-const user = useSupabaseUser()
 
 function openLoginModal() {
 	isLoginModal.value = true
@@ -16,8 +16,8 @@ const userSettings = ref([
 	[{
 		label: 'Profile',
 		avatar: {
-			src: user.value ? user.value.user_metadata.avatar : '',
-			alt: user.value ? user.value.user_metadata.username : ''
+			src: '',
+			alt: ''
 		}
 	}],
 	[{
@@ -39,7 +39,7 @@ const userSettings = ref([
 	[{
 		label: 'Login out',
 		icon: 'i-heroicons-arrow-right-on-rectangle-solid',
-		click: () => supabase.auth.signOut()
+		click: () => (auth.signOut())
 	}]
 ])
 </script>
@@ -78,10 +78,10 @@ const userSettings = ref([
 			<div v-else class="navbar__user flex items-center justify-center gap-2">
 				<UDropdown :items="userSettings" class="flex items-center">
 					<div class="flex items-center space-x-2">
-						<UAvatar size="sm" :src="user.user_metadata.avatar" :alt="user.user_metadata.username" />
+						<UAvatar size="sm" :src="user.photoURL ? user.photoURL : undefined" :alt="user.displayName ? user.displayName : undefined" />
 						<div class="font-medium dark:text-white">
-							<div class="text-sm">{{ user.user_metadata.username }}</div>
-							<div class="text-xs text-gray-500 dark:text-gray-400">Joined in {{ useDateFormat(user.created_at, 'MMMM YYYY', { locales: 'en-US'}).value }}</div>
+							<div class="text-sm">{{ user.displayName }}</div>
+							<!-- <div class="text-xs text-gray-500 dark:text-gray-400">Joined in {{ useDateFormat(user., 'MMMM YYYY', { locales: 'en-US'}).value }}</div> -->
 						</div>
 					</div>
 				</UDropdown>
