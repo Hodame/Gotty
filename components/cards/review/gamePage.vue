@@ -8,12 +8,12 @@ const props = defineProps<{
 </script>
 
 <template>
-	<div class="max-w-sm p-4 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700">
+	<div class="max-w-sm p-4 bg-white border border-gray-200 rounded-lg dark:bg-gray-800 dark:border-gray-700" v-if="review.text_review !== ''">
 		<div class="flex justify-between items-center mb-2">
-			<!-- <div class="flex items-center overflow-hidden flex-1 mr-3">
-				<UAvatar size="lg" :src="postedBy?.avatar_url" :alt="postedBy?.username" class="border border-color mr-2" />
-				<span class="text-ellipsis overflow-hidden text-lg">{{ postedBy?.username ? postedBy.username : 'pidaras' }}</span>
-			</div> -->
+			<div class="flex items-center overflow-hidden flex-1 mr-3">
+				<UAvatar size="lg" :src="review.user.avatar" :alt="review.user.nickname" class="border border-color mr-2" />
+				<span class="text-ellipsis overflow-hidden text-lg">{{ review.user.nickname ? review.user.nickname : 'pidaras' }}</span>
+			</div>
 
 			<div class="flex items-center mt-1">
 				<UIcon name="i-heroicons-star" class="mr-1" />

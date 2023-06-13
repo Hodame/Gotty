@@ -46,6 +46,7 @@ const login = handleSubmit(async function (values: any) {
 	try {
 		loading.value = true
 		await signInWithEmailAndPassword(auth, values.email, values.password)
+		emits('update:isModal', false)
 	} catch (error) {
 		throw error
 	}

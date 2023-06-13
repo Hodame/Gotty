@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { getDocs } from 'firebase/firestore';
+import { Review } from '~/global';
 
 const db = useFirestore()
 const user = useCurrentUser()
@@ -7,15 +8,7 @@ const route = useRoute()
 
 const gameId = ref(Number(route.params.id))
 
-const reviews = await getDocs(gamesReviewsCollection(db))
-
-
-// try {
-//   if(!user.value) throw new Error()
-//   const reviews = await getDocs(query(collection(db, 'profiles', user.value.uid, 'games_reviews'), where('game_id', '==', gameId.value)))
-// } catch (error) {
-  
-// }
+const reviews = ref(await getDocs(gamesReviewsCollection(db, gameId.value.toString())))
 </script>
 
 <template>
