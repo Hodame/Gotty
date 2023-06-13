@@ -12,6 +12,7 @@ const to = useDateFormat(useNow(), 'YYYY-MM-DD')
 
 const { data: gameLatest, pending: latestPending } = await useLazyFetch<PageableList<GameInfoAll>>(() => runtimeConfig.public.baseUrl, {
 	params: {
+		page_size: 8,
 		key: runtimeConfig.public.apiKey,
 		ordering: '-released',
 		dates: from.value + ',' + to.value,
@@ -20,6 +21,7 @@ const { data: gameLatest, pending: latestPending } = await useLazyFetch<Pageable
 
 const { data: gamePopular, pending: popularPending } = await useLazyFetch<PageableList<GameInfoAll>>(() => runtimeConfig.public.baseUrl, {
 	params: {
+		page_size: 8,
 		key: runtimeConfig.public.apiKey,
 		ordering: '-rating',
 		dates: from.value + ',' + to.value,

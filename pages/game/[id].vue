@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { doc, getDoc } from 'firebase/firestore';
 import { GameInfoAll, Review } from '~/global';
 
+const db = useFirestore()
+const user = useCurrentUser()
 const runtimeConfig = useRuntimeConfig()
 const route = useRoute()
 
@@ -12,6 +15,19 @@ const userReview = ref<Review | null>(null)
 const { data: game, pending } = useLazyFetch<GameInfoAll>(() => `${runtimeConfig.public.baseUrl}/${gameId.value}`, {
   params: {
     key: runtimeConfig.public.apiKey,
+  }
+})
+
+onMounted(async function () {
+  if(user.value !== null && user.value !== undefined) {
+    const response = await getDoc(doc(db, 'profiles', user.value.uid, 'games_reviews', gameId.value.toString()).withConverter(converter<Review>()))
+    const data = response.data()
+    if(data !== undefined) {
+      userReview.value = data
+      response.data()
+    }
+  } else {
+    userReview.value = null
   }
 })
 </script>
@@ -52,7 +68,7 @@ const { data: game, pending } = useLazyFetch<GameInfoAll>(() => `${runtimeConfig
           <img :src="game?.background_image" alt="screenshots" class="aspect-[16/9] object-cover">
         </div>
 
-        <div class="my-4" v-if="game">
+        <div class="my-4" v-if="game && user">
           <div v-if="!userReview">
             <UButton @click="isAddModal = true" icon="i-heroicons-plus-20-solid" size="lg" label="Add to" block />
             <ModalsRateGame :game="{ id: game.id, name: game.name, background_image: game.background_image }"

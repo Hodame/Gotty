@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { addDoc, collection } from 'firebase/firestore';
+import { update } from 'firebase/database';
+import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { Review } from '~/global';
 
 const db = useFirestore()
@@ -8,9 +9,9 @@ const user = useCurrentUser()
 const props = defineProps<{
 	isModal: boolean
 	game: {
-		name: string 
-		id: number 
-		background_image: string 
+		name: string
+		id: number
+		background_image: string
 	},
 	userReview?: Review
 }
@@ -40,45 +41,69 @@ const value = computed({
 async function addGameReview() {
 	try {
 		isLoading.value = true
-		if(!user.value) throw new Error()
-		await addDoc(gamesReviewsCollection(db), {
+		if (!user.value) throw new Error()
+		await addDoc(collection(db, 'games', props.game.id.toString(), 'reviews'), {
 			game_id: props.game.id,
 			name: props.game.name,
 			background_image: props.game.background_image,
 			text_review: textReview.value,
 			rating: selectedRate.value,
 			collection: selected.value,
-			user_id: user.value.uid
+			user: {
+				user_id: user.value.uid,
+				nickname: user.value.displayName,
+				avatar: user.value.photoURL
+			}
+		}).then(async (data) => {		
+			if (!user.value) throw new Error()				
+			await updateDoc(doc(db, 'games', props.game.id.toString(), 'reviews', data.id), {
+				doc_id: data.id
+			})
+
+			await setDoc(doc(db, 'profiles', user.value.uid, 'games_reviews', props.game.id.toString()), {
+			game_id: props.game.id,
+			name: props.game.name,
+			background_image: props.game.background_image,
+			text_review: textReview.value,
+			rating: selectedRate.value,
+			collection: selected.value,
+			doc_id: data.id,
 		})
+		})
+
 		isLoading.value = false
+		emits('update:isModal', false)
+		isRateModal.value = false
 	} catch (error) {
 		throw error
 	}
 }
 
-// async function editGameReview() {
-// 	try {
-// 		isLoading.value = true
-// 		console.log(props.game.id?.toString(), 'usre', user.value?.id);		
-// 		//@ts-ignore
-// 		const { data, error } = await supabase.from('games_review').update({
-// 			"text_review": textReview.value,
-// 			"rating": selectedRate.value.toString(),
-// 			"collection": selected.value,
-// 		}).eq('user_id', user.value?.id).eq('game_id', props.game.id?.toString()).select()
+async function editGameReview() {
+	try {
+		isLoading.value = true
 
-// 		if(data) {
-// 			console.log(data)
-// 		}
+		if (user.value !== null && user.value !== undefined && props.userReview !== undefined) {
+			await updateDoc(doc(db, 'profiles', user.value?.uid, 'games_reviews', props.game.id.toString()), {
+				text_review: textReview.value,
+				collection: selected.value,
+				rating: selectedRate.value
+			})
 
-// 		if(error) {	
-// 			console.log(error);
-// 		}
-// 		isLoading.value = false
-// 	} catch (error) {
-// 		throw error
-// 	}
-// }
+			await updateDoc(doc(db, 'games', props.game.id.toString(), 'reviews', props.userReview.doc_id), {
+				text_review: textReview.value,
+				collection: selected.value,
+				rating: selectedRate.value
+			})
+		}
+
+		isLoading.value = false
+		emits('update:isModal', false)
+		isRateModal.value = false
+	} catch (error) {
+		throw error
+	}
+}
 
 </script>
 
@@ -130,8 +155,9 @@ async function addGameReview() {
 						</div>
 
 						<template #footer>
-							<!-- <UButton v-if="userReview" @click="editGameReview()" :loading="isLoading" label="Edit" size="sm" color="primary" block variant="solid" /> -->
-							<UButton @click="addGameReview()" :loading="isLoading" label="Add" size="sm" color="primary" block variant="solid" />
+							<UButton v-if="userReview" @click="editGameReview()" :loading="isLoading" label="Edit" size="sm" color="primary" block variant="solid" />
+							<UButton v-else @click="addGameReview()" :loading="isLoading" label="Add" size="sm" color="primary" block
+								variant="solid" />
 						</template>
 
 					</UCard>
