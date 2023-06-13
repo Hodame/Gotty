@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { update } from 'firebase/database';
 import { addDoc, collection, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { Review } from '~/global';
 
@@ -23,8 +22,9 @@ const emits = defineEmits<{
 
 const isRateModal = ref(false)
 const isLoading = ref(false)
+const reload = useReload()
 
-const selected = ref<'want' | 'playing' | 'beaten' | ''>(props.userReview?.collection ? props.userReview?.collection : '')
+const selected = ref<'Want' | 'Playing' | 'Beaten' | ''>(props.userReview?.collection ? props.userReview?.collection : '')
 const selectedRate = ref(props.userReview?.rating ? props.userReview?.rating : '')
 const rateScale = ref(['', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'])
 const textReview = ref(props.userReview?.text_review ? props.userReview?.text_review : '')
@@ -71,6 +71,7 @@ async function addGameReview() {
 		})
 		})
 
+		reload.value = true
 		isLoading.value = false
 		emits('update:isModal', false)
 		isRateModal.value = false
@@ -97,6 +98,7 @@ async function editGameReview() {
 			})
 		}
 
+		reload.value = true
 		isLoading.value = false
 		emits('update:isModal', false)
 		isRateModal.value = false
@@ -104,7 +106,6 @@ async function editGameReview() {
 		throw error
 	}
 }
-
 </script>
 
 <template>
@@ -120,16 +121,16 @@ async function editGameReview() {
 			</template>
 
 			<div class="flex flex-col gap-3">
-				<UButton size="lg" @click="selected = 'want'" block label="Want"
-					:variant="selected === 'want' ? 'solid' : 'outline'" icon="i-heroicons-bookmark" />
-				<UButton size="lg" @click="selected = 'playing'" block label="Plaing"
-					:variant="selected === 'playing' ? 'solid' : 'outline'" icon="i-heroicons-clock" />
-				<UButton size="lg" @click="selected = 'beaten'" block label="Beaten"
-					:variant="selected === 'beaten' ? 'solid' : 'outline'" icon="i-heroicons-flag" />
+				<UButton size="lg" @click="selected = 'Want'" block label="Want"
+					:variant="selected === 'Want' ? 'solid' : 'outline'" icon="i-heroicons-bookmark" />
+				<UButton size="lg" @click="selected = 'Playing'" block label="Plaing"
+					:variant="selected === 'Playing' ? 'solid' : 'outline'" icon="i-heroicons-clock" />
+				<UButton size="lg" @click="selected = 'Beaten'" block label="Beaten"
+					:variant="selected === 'Beaten' ? 'solid' : 'outline'" icon="i-heroicons-flag" />
 			</div>
 
 			<template #footer>
-				<UButton v-if="selected === 'want'" block label="Add" :disabled="selected !== 'want'" />
+				<UButton v-if="selected === 'Want'" @click="addGameReview()" :loading="isLoading" block label="Add" :disabled="selected !== 'Want'" />
 				<UButton v-else block label="Continue" @click="isRateModal = true" :disabled="selected === null" />
 
 				<UModal :transition="false" v-model="isRateModal">

@@ -9,6 +9,7 @@ const route = useRoute()
 const gameId = ref(Number(route.params.id))
 
 const reviews = ref(await getDocs(gamesReviewsCollection(db, gameId.value.toString())))
+
 </script>
 
 <template>
