@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  modules: ['@nuxthq/ui', '@nuxtjs/tailwindcss', '@vueuse/nuxt', 'nuxt-swiper', '@vee-validate/nuxt', 'nuxt-vuefire', ],
+  modules: ['@nuxthq/ui', '@nuxtjs/tailwindcss', '@vueuse/nuxt', 'nuxt-swiper', '@vee-validate/nuxt', 'nuxt-vuefire',],
   veeValidate: {
     componentNames: {
       Form: 'VeeForm',
@@ -23,6 +23,7 @@ export default defineNuxtConfig({
       appId: '1:817082315621:web:e337de8620bfff05cb278c',
     },
     auth: true,
+    admin: { serviceAccount: 'gotty-collection-firebase-adminsdk-onvsq-b15b20e9d7.json' },
   },
   ui: {
     icons: ['fluent', 'heroicons', 'bi']

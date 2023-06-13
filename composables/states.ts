@@ -17,3 +17,9 @@ export const useUser = () => useState('user', function () {
 
 	return user
 })
+
+export const useReload = () => useState('reloader', function() {
+	const reload = false
+
+	return reload
+})

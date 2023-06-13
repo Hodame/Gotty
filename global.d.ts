@@ -19,7 +19,7 @@ export type Review = {
 	background_image: string
 	rating: number
 	doc_id: string
-	collection: 'want' | 'playing' | 'beaten' | ''
+	collection: 'Want' | 'Playing' | 'Beaten' | ''
 	text_review: string
 	user: {
 		user_id: string
