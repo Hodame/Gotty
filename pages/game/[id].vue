@@ -4,6 +4,7 @@ import { GameInfoAll, Review } from '~/global';
 
 const db = useFirestore()
 const user = useCurrentUser()
+const reload = useReload()
 const runtimeConfig = useRuntimeConfig()
 const route = useRoute()
 
@@ -18,7 +19,7 @@ const { data: game, pending } = useLazyFetch<GameInfoAll>(() => `${runtimeConfig
   }
 })
 
-onMounted(async function () {
+async function getUserReview() {
   if(user.value !== null && user.value !== undefined) {
     const response = await getDoc(doc(db, 'profiles', user.value.uid, 'games_reviews', gameId.value.toString()).withConverter(converter<Review>()))
     const data = response.data()
@@ -29,6 +30,15 @@ onMounted(async function () {
   } else {
     userReview.value = null
   }
+}
+
+onMounted(() => getUserReview())
+
+watch(reload ,async function () {
+  if(reload.value) {
+    getUserReview()
+    reload.value = false
+  } 
 })
 </script>
 

@@ -1,23 +1,39 @@
 <script setup lang="ts">
 import { useTitle } from '@vueuse/core';
+import { getDocs } from 'firebase/firestore';
 
-const user = useUser()
+const user = useCurrentUser()
+const db = useFirestore()
 
 const infoCard = ref(['Games', 'Playing', 'Want', 'Beaten'])
+const gamesCount = ref([0, 0, 0, 0])
 const discord = ref('hodame4523')
+const isLoading = ref(true)
 
 const { copy, text, copied } = useClipboard({ source: discord })
 
-useTitle(user.value.user_metadata.nickname)
+const beaten = await getDocs(userCollection(db, user.value?.uid, 'Beaten'))
+const want = await getDocs(userCollection(db, user.value?.uid, 'Want'))
+const playing = await getDocs(userCollection(db, user.value?.uid, 'Playing'))
+
+
+onNuxtReady(() => {
+	isLoading.value = false
+})
+
+gamesCount.value = [beaten.docs.length + want.docs.length + playing.docs.length, playing.docs.length, beaten.docs.length, want.docs.length]
+
+useTitle(user.value?.displayName)
 </script>
 
 <template>
-	<div>
+	{{ isLoading }}
+	<div v-if="!isLoading">
 		<div class="grid grid-cols-[1fr,1.5fr] items-center">
 			<div class="flex gap-3">
-				<UAvatar size="xl" :src="user.user_metadata.avatar" :alt="user.user_metadata.nickname" />
+				<UAvatar size="xl" :src="user?.photoURL" :alt="user?.displayName" />
 				<div>
-					<p class="text-2xl font-semibold">{{ user.user_metadata.nickname }}</p>
+					<p class="text-2xl font-semibold">{{ user?.displayName }}</p>
 					<div class="flex">
 						<div class="relative">
 							<UTooltip :text="discord">
@@ -31,21 +47,68 @@ useTitle(user.value.user_metadata.nickname)
 				</div>
 			</div>
 
-			<div class="grid grid-cols-4 border border-color rounded-xl">
-				<div v-for="(card, idx) in infoCard" :key="idx"
-					class="p-2 w-full border-r border-color last:border-none bg-gray-100/40 dark:bg-white/5">
+			<div class="grid grid-cols-4 rounded-xl">
+				<div v-for="(card, idx) in infoCard" :key="idx" class="p-2 w-full border-r border-color last:border-none">
 					<h1 class="text-lg font-semibold text-center">{{ card }}</h1>
-					<p class="text-xl font-medium text-center">204</p>
+					<p class="text-xl font-medium text-center">{{ gamesCount[idx] }}</p>
 				</div>
 			</div>
 		</div>
 
-		<div class="my-6">
-			<h1 class="text-5xl font-semibold mb-5">Want</h1>
+		<div v-if="!playing.empty" class="my-6">
+			<h1 class="text-5xl font-semibold">Playing</h1>
 
 			<div>
-				<!-- <CustomSliderDefault/> -->
+				<Swiper :autoplay="{
+						delay: 4000,
+						disableOnInteraction: true
+					}" :slides-per-view="3" :space-between="20" :effect="'coverflow'">
+					<SwiperSlide v-for="(game, idx) in playing.docs" :key="idx" style="padding-top: 25px;">
+						<NuxtLink :to="'/game/' + game.data().game_id">
+							<CardsReviewProfile :review="game.data()" />
+						</NuxtLink>
+					</SwiperSlide>
+				</Swiper>
+
+			</div>
+		</div>
+
+		<div v-if="!beaten.empty" class="my-6">
+			<h1 class="text-5xl font-semibold">Beaten</h1>
+
+			<div>
+				<Swiper :autoplay="{
+						delay: 4000,
+						disableOnInteraction: true
+					}" :slides-per-view="3" :space-between="20" :effect="'coverflow'">
+					<SwiperSlide v-for="(game, idx) in beaten.docs" :key="idx" style="padding-top: 25px;">
+						<NuxtLink :to="'/game/' + game.data().game_id">
+							<CardsReviewProfile :review="game.data()" />
+						</NuxtLink>
+					</SwiperSlide>
+				</Swiper>
+
+			</div>
+		</div>
+
+		<div v-if="!want.empty" class="my-6">
+			<h1 class="text-5xl font-semibold">Want</h1>
+
+			<div>
+				<Swiper :autoplay="{
+						delay: 4000,
+						disableOnInteraction: true
+					}" :slides-per-view="3" :space-between="20" :effect="'coverflow'">
+					<SwiperSlide v-for="(game, idx) in want.docs" :key="idx" style="padding-top: 25px;">
+						<NuxtLink :to="'/game/' + game.data().game_id">
+							<CardsReviewProfile :review="game.data()" />
+						</NuxtLink>
+					</SwiperSlide>
+				</Swiper>
+
 			</div>
 		</div>
 	</div>
+
+	<SkeletonsProfile v-else/>
 </template>
