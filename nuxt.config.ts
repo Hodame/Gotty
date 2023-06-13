@@ -23,9 +23,6 @@ export default defineNuxtConfig({
       appId: '1:817082315621:web:e337de8620bfff05cb278c',
     },
     auth: true,
-    admin: {
-      serviceAccount: 'gotty-collection-firebase-adminsdk-onvsq-b15b20e9d7.json',
-    }
   },
   ui: {
     icons: ['fluent', 'heroicons', 'bi']

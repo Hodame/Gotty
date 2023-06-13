@@ -18,9 +18,14 @@ export type Review = {
 	name: string
 	background_image: string
 	rating: number
+	doc_id: string
 	collection: 'want' | 'playing' | 'beaten' | ''
 	text_review: string
-	user_id : string
+	user: {
+		user_id: string
+		nickname: string
+		avatar: string
+	}
 }
 
 export type GameInfoAll = {
