@@ -6,9 +6,12 @@ definePageMeta({
 	keepalive: true
 })
 
+
+
 const runtimeConfig = useRuntimeConfig()
 const from = useDateFormat(new Date(new Date().setMonth(new Date().getMonth() - 1)), 'YYYY-MM-DD')
 const to = useDateFormat(useNow(), 'YYYY-MM-DD')
+const isLoadingPage = ref(true)
 
 const { data: gameLatest, pending: latestPending } = await useLazyFetch<PageableList<GameInfoAll>>(() => runtimeConfig.public.baseUrl, {
 	params: {
@@ -28,13 +31,15 @@ const { data: gamePopular, pending: popularPending } = await useLazyFetch<Pageab
 	},
 }) 
 
+onMounted(() => isLoadingPage.value = false)
+
 useTitle('Main')
 </script>	
 
 <template>
 	<div>
 		<section class="main__popular mb-8">
-			<div v-if="!popularPending">
+			<div v-if="!popularPending && !isLoadingPage">
 				<div class="main__title text-5xl font-semibold mb-5">Popular</div>
 
 				<CustomSliderDefault :slides="gamePopular"/>
@@ -49,7 +54,7 @@ useTitle('Main')
 		</section>
 
 		<section class="main__releases mb-8">
-			<div v-if="!latestPending">
+			<div v-if="!latestPending && !isLoadingPage">
 				<div class="main__title text-5xl font-semibold mb-5">Latest release</div>
 
 				<CustomSliderDefault :slides="gameLatest"/>

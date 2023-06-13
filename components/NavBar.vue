@@ -16,8 +16,8 @@ const userSettings = ref([
 	[{
 		label: 'Profile',
 		avatar: {
-			src: '',
-			alt: ''
+			src: user.value?.photoURL,
+			alt: user.value?.displayName
 		}
 	}],
 	[{

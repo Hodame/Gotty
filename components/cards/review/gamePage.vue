@@ -28,11 +28,11 @@ const props = defineProps<{
 			<UButton label="Read more" class="mr-1" />
 
 			<div>
-				<div v-if="review.collection === 'playing'" class="flex items-center gap-1">
+				<div v-if="review.collection === 'Playing'" class="flex items-center gap-1">
 					<UIcon name="i-heroicons-clock"/>
 					<span>{{ review.collection }}</span>
 				</div>
-				<div v-if="review.collection === 'beaten'" class="flex items-center gap-1">
+				<div v-if="review.collection === 'Beaten'" class="flex items-center gap-1">
 					<UIcon name="i-heroicons-flag"/>
 					<span>{{ review.collection }}</span>
 				</div>
