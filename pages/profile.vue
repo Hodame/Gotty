@@ -2,19 +2,24 @@
 import { useTitle } from '@vueuse/core';
 import { getDocs } from 'firebase/firestore';
 
-const user = useCurrentUser()
+definePageMeta({
+	middleware: 'auth'
+})
+
+const user = useCurrentUser()!
 const db = useFirestore()
 
 const infoCard = ref(['Games', 'Playing', 'Want', 'Beaten'])
 const gamesCount = ref([0, 0, 0, 0])
 const discord = ref('hodame4523')
 const isLoading = ref(true)
+const isUpdateModal = ref(false)
 
 const { copy, text, copied } = useClipboard({ source: discord })
 
-const beaten = await getDocs(userCollection(db, user.value?.uid, 'Beaten'))
-const want = await getDocs(userCollection(db, user.value?.uid, 'Want'))
-const playing = await getDocs(userCollection(db, user.value?.uid, 'Playing'))
+const beaten = await getDocs(userCollection(db, user.value!.uid, 'Beaten'))
+const want = await getDocs(userCollection(db, user.value!.uid, 'Want'))
+const playing = await getDocs(userCollection(db, user.value!.uid, 'Playing'))
 
 
 onNuxtReady(() => {
@@ -27,13 +32,15 @@ useTitle(user.value?.displayName)
 </script>
 
 <template>
-	{{ isLoading }}
-	<div v-if="!isLoading">
+	<div v-if="!isLoading && user">
 		<div class="grid grid-cols-[1fr,1.5fr] items-center">
 			<div class="flex gap-3">
-				<UAvatar size="xl" :src="user?.photoURL" :alt="user?.displayName" />
+				<UAvatar size="xl" :src="user.photoURL ? user.photoURL : ''" :alt="user.displayName ? user.displayName : 'User'" />
 				<div>
-					<p class="text-2xl font-semibold">{{ user?.displayName }}</p>
+					<p class="text-2xl font-semibold">{{ user?.displayName }}
+						<UButton @click="isUpdateModal = true" label="update" />
+						<ModalsProfilesSettings v-model:is-modal="isUpdateModal"/>
+					</p>
 					<div class="flex">
 						<div class="relative">
 							<UTooltip :text="discord">
@@ -60,9 +67,9 @@ useTitle(user.value?.displayName)
 
 			<div>
 				<Swiper :autoplay="{
-						delay: 4000,
-						disableOnInteraction: true
-					}" :slides-per-view="3" :space-between="20" :effect="'coverflow'">
+					delay: 4000,
+					disableOnInteraction: true
+				}" :slides-per-view="3" :space-between="20" :effect="'coverflow'">
 					<SwiperSlide v-for="(game, idx) in playing.docs" :key="idx" style="padding-top: 25px;">
 						<NuxtLink :to="'/game/' + game.data().game_id">
 							<CardsReviewProfile :review="game.data()" />
@@ -78,9 +85,9 @@ useTitle(user.value?.displayName)
 
 			<div>
 				<Swiper :autoplay="{
-						delay: 4000,
-						disableOnInteraction: true
-					}" :slides-per-view="3" :space-between="20" :effect="'coverflow'">
+					delay: 4000,
+					disableOnInteraction: true
+				}" :slides-per-view="3" :space-between="20" :effect="'coverflow'">
 					<SwiperSlide v-for="(game, idx) in beaten.docs" :key="idx" style="padding-top: 25px;">
 						<NuxtLink :to="'/game/' + game.data().game_id">
 							<CardsReviewProfile :review="game.data()" />
@@ -96,9 +103,9 @@ useTitle(user.value?.displayName)
 
 			<div>
 				<Swiper :autoplay="{
-						delay: 4000,
-						disableOnInteraction: true
-					}" :slides-per-view="3" :space-between="20" :effect="'coverflow'">
+					delay: 4000,
+					disableOnInteraction: true
+				}" :slides-per-view="3" :space-between="20" :effect="'coverflow'">
 					<SwiperSlide v-for="(game, idx) in want.docs" :key="idx" style="padding-top: 25px;">
 						<NuxtLink :to="'/game/' + game.data().game_id">
 							<CardsReviewProfile :review="game.data()" />
@@ -110,5 +117,4 @@ useTitle(user.value?.displayName)
 		</div>
 	</div>
 
-	<SkeletonsProfile v-else/>
-</template>
+	<SkeletonsProfile v-else /></template>

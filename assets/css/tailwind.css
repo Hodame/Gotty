@@ -6,7 +6,7 @@
 	body {
 		@apply bg-white dark:bg-cool-900;
 	}
-	body::before {
+	html.dark.body::before {
 		content: '';
 		height: 100%;
 		position: fixed;

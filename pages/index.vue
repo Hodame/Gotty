@@ -2,12 +2,6 @@
 import { useTitle } from '@vueuse/core';
 import { PageableList, GameInfoAll } from '~/global';
 
-definePageMeta({
-	keepalive: true
-})
-
-
-
 const runtimeConfig = useRuntimeConfig()
 const from = useDateFormat(new Date(new Date().setMonth(new Date().getMonth() - 1)), 'YYYY-MM-DD')
 const to = useDateFormat(useNow(), 'YYYY-MM-DD')
