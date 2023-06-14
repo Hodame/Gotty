@@ -21,6 +21,7 @@ export default defineNuxtConfig({
       authDomain: 'gotty-collection.firebaseapp.com',
       projectId: 'gotty-collection',
       appId: '1:817082315621:web:e337de8620bfff05cb278c',
+      storageBucket: 'gs://gotty-collection.appspot.com'
     },
     auth: true,
     admin: { serviceAccount: 'gotty-collection-firebase-adminsdk-onvsq-b15b20e9d7.json' },
