@@ -21,11 +21,6 @@ defineProps<{
             <div v-else class="w-full h-full border-b border-color flex justify-center items-center">
                 <UIcon name="i-heroicons-photo" class="w-11 h-11 bg-primary" />
             </div>
-            <div class="top-3 right-3 absolute bg-red-500/50 px-2.5 py-1 rounded-md backdrop-blur-sm">
-                <span class="font-medium text-sm  text-red-200 leading-none">
-                    1
-                </span>
-            </div>
         </div>
 
         <div class="p-5 max-h-full overflow-hidden">

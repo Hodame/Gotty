@@ -9,7 +9,6 @@ const route = useRoute()
 const gameId = ref(Number(route.params.id))
 
 const reviews = ref(await getDocs(gamesReviewsCollection(db, gameId.value.toString())))
-
 </script>
 
 <template>
@@ -19,7 +18,7 @@ const reviews = ref(await getDocs(gamesReviewsCollection(db, gameId.value.toStri
     <Swiper :autoplay="{
       delay: 8000,
       disableOnInteraction: true
-    }" :slides-per-view="4" :space-between="20" class="main__popular-cards">
+    }" :slides-per-view="3" :space-between="20" class="main__popular-cards">
       <SwiperSlide v-for="(review, idx) in reviews.docs" :key="idx">
         <CardsReviewGamePage :review="review.data()" />
       </SwiperSlide>

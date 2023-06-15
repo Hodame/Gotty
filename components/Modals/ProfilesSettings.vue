@@ -59,13 +59,13 @@ onChange(async function (files) {
 				</div>
 			</template>
 
-			<div>
+			<div v-if="user">
 				<div class="grid grid-cols-2 gap-4">
 					<UFormGroup label="Email">
-						<UInput disabled icon="i-heroicons-envelope" />
+						<UInput v-model="(user.email as string)" disabled icon="i-heroicons-envelope" />
 					</UFormGroup>
 					<UFormGroup label="Nickname" hint="Must be unique">
-						<UInput icon="i-heroicons-user" />
+						<UInput v-model="(user.displayName as string)" icon="i-heroicons-user" />
 					</UFormGroup>
 					<UFormGroup label="Discord id">
 						<UInput placeholder="john#4021" icon="i-bi-discord" />
@@ -76,7 +76,7 @@ onChange(async function (files) {
 					<UTextarea placeholder="Your bio" :rows="4" class="col-span-full" />
 
 					<div class="col-span-full flex items-center gap-4">
-						<UAvatar size="xl" :src="user!.photoURL ? user!.photoURL : ''" :alt="user!.displayName ? user!.displayName : '...'"/>
+						<UAvatar size="xl" :src="user!.photoURL ? user!.photoURL : ''" :alt="user!.displayName!"/>
 						<UButton @click="open" label="Upload file"/>
 					</div>
 				</div>
