@@ -13,34 +13,21 @@ function openLoginModal() {
 }
 
 const userSettings = ref([
-	[{
-		label: 'Profile',
-		avatar: {
-			src: user.value?.photoURL,
-			alt: user.value?.displayName
+	[
+		{
+			label: 'Dark mode',
+			icon: isDark.value ? 'i-heroicons-moon' : 'i-heroicons-sun-20-solid',
+			click: () => isDark.value = !isDark.value,
+		},
+		{
+			label: 'Login out',
+			icon: 'i-heroicons-arrow-right-on-rectangle-solid',
+			click: () => {
+				auth.signOut()
+				navigateTo('/')
+			}
 		}
-	}],
-	[{
-		label: 'Games',
-		icon: 'i-heroicons-rectangle-stack'
-	}, {
-		label: 'Reviews',
-		icon: 'i-fluent-preview-link-16-regular',
-	}],
-	[{
-		label: 'Settings',
-		icon: 'i-heroicons-adjustments-vertical-solid',
-	},
-	{
-		label: 'Dark mode',
-		icon: isDark.value ? 'i-heroicons-moon' : 'i-heroicons-sun-20-solid',
-		click: () => isDark.value = !isDark.value,
-	}],
-	[{
-		label: 'Login out',
-		icon: 'i-heroicons-arrow-right-on-rectangle-solid',
-		click: () => (auth.signOut())
-	}]
+	]
 ])
 
 watch(user, () => {
@@ -69,8 +56,8 @@ watch(user, () => {
 				</UModal>
 			</div>
 			<UButton size="xs" to="/" label="Main" :variant="$route.path === '/' ? 'soft' : 'ghost'" icon="i-heroicons-home" />
-			<UButton size="xs" to="/profile" label="Profile" :variant="$route.path === '/profile' ? 'soft' : 'ghost'"
-				icon="i-heroicons-user" />
+			<UButton v-if="user" size="xs" to="/profile" label="Profile"
+				:variant="$route.path === '/profile' ? 'soft' : 'ghost'" icon="i-heroicons-user" />
 		</ul>
 
 		<div>

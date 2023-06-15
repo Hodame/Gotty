@@ -1,7 +1,7 @@
 <template>
 	<footer class="flex justify-between">
 		<div>
-			<img src="~/assets/icons/Logo.svg" alt="Gotty" class="h-9 mb-1">
+			<span class="text-xs text-gray-500 dark:text-gray-300">© 2023 Gotty™. All Rights Reserved.</span>
 		</div>
 		<div class="flex items-center">
 			<UButton to="https://github.com/Hodame/Gotty/tree/main" target="_blank" icon="i-bi-github" size="xs" variant="link" color="gray"/>

@@ -19,6 +19,14 @@
 		@apply border-gray-200 dark:border-gray-600;
 	}
 
+	.u-avatar img {
+		@apply object-cover
+	}
+
+	.u-avatar {
+		@apply flex items-center justify-center
+	}
+
 	.aspect-3-3 {
 		aspect-ratio: 3 / 3;
 	}
