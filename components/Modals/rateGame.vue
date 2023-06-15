@@ -42,6 +42,7 @@ async function addGameReview() {
 	try {
 		isLoading.value = true
 		if (!user.value) throw new Error()
+		if(textReview.value.length >= 250) throw new Error('text review must be less than 250 characters')
 		await addDoc(collection(db, 'games', props.game.id.toString(), 'reviews'), {
 			game_id: props.game.id,
 			name: props.game.name,
@@ -81,6 +82,7 @@ async function addGameReview() {
 }
 
 async function editGameReview() {
+	if(textReview.value.length >= 250) throw new Error('text review must be less than 250 characters')
 	try {
 		isLoading.value = true
 
@@ -141,8 +143,6 @@ async function editGameReview() {
 						</template>
 
 						<div>
-							<!-- <h1 class="text-xl font-semibold">Diablo 4</h1> -->
-
 							<div class="mb-3">
 								<h2 class="text-lg font-medium mb-2">Rate this game!</h2>
 								<ul class="grid grid-cols-11 gap-2">
@@ -152,12 +152,13 @@ async function editGameReview() {
 								</ul>
 							</div>
 
-							<UTextarea v-model="textReview" placeholder="Write a review" :rows="5" />
+							<UTextarea v-model="textReview" placeholder="Write a review" :rows="4"  :color="textReview.length >= 250 ? 'red' : 'primary'"/>
+							<span class="text-xs text-gray-400" :class="textReview.length >= 250 ? 'text-red-400' : 'text-gray-400'">{{ textReview.length }} / 250</span>
 						</div>
 
 						<template #footer>
-							<UButton v-if="userReview" @click="editGameReview()" :loading="isLoading" label="Edit" size="sm" color="primary" block variant="solid" />
-							<UButton v-else @click="addGameReview()" :loading="isLoading" label="Add" size="sm" color="primary" block
+							<UButton v-if="userReview" @click="editGameReview()" :disabled="textReview.length >= 250" :loading="isLoading" label="Edit" size="sm" color="primary" block variant="solid" />
+							<UButton v-else @click="addGameReview()" :disabled="textReview.length >= 250" :loading="isLoading" label="Add" size="sm" color="primary" block
 								variant="solid" />
 						</template>
 

@@ -20,10 +20,10 @@ const { data: game, pending } = useLazyFetch<GameInfoAll>(() => `${runtimeConfig
 })
 
 async function getUserReview() {
-  if(user.value !== null && user.value !== undefined) {
+  if (user.value !== null && user.value !== undefined) {
     const response = await getDoc(doc(db, 'profiles', user.value.uid, 'games_reviews', gameId.value.toString()).withConverter(converter<Review>()))
     const data = response.data()
-    if(data !== undefined) {
+    if (data !== undefined) {
       userReview.value = data
       response.data()
     }
@@ -34,11 +34,19 @@ async function getUserReview() {
 
 onMounted(() => getUserReview())
 
-watch(reload ,async function () {
-  if(reload.value) {
+watchEffect(async function () {
+  if (reload.value) {
     getUserReview()
     reload.value = false
-  } 
+  }
+  if(user) {
+    getUserReview()
+  }
+})
+
+const title = ref(game.value?.name ? game.value?.name : 'Game')
+useSeoMeta({
+  title,
 })
 </script>
 
@@ -98,12 +106,11 @@ watch(reload ,async function () {
           <div v-html="game?.description" class="text-gray-900 dark:text-gray-400"></div>
         </div>
 
+        <div>
+          <GamePageReviews />
+        </div>
       </div>
-
       <GamePageInfo :game="game" />
     </div>
-  </div>
-  <div>
-    <GamePageReviews/>
   </div>
 </template>

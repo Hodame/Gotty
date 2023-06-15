@@ -8,7 +8,7 @@
 			<NavBar class="max-w-[1200px] mx-auto px-4" />
 		</div>
 		<div class="default max-w-[1200px] w-full mx-auto px-4 flex-auto">
-			<div class="pt-24">
+			<div class="pt-24 h-full">
 				<slot />
 			</div>
 		</div>
